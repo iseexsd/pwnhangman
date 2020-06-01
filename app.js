@@ -12,14 +12,14 @@ let dictionary = fs.readFileSync("./words_alpha.txt").toString().split("\n")
 function solve(d) {
     let possibleWords = db.get("possibleWords").value().storage.split("\n")
     let newPossibleWords = []
-    let blFile = db.get("correctLetters").value().storage.split("\n")
-    let blackListed = []
-    let superbl = db.get("incorrectLetters").value().storage.split("\n")
+    let correctLetters = db.get("correctLetters").value().storage.split("\n")
+    let knownCharacters = []
+    let incorrectLetters = db.get("incorrectLetters").value().storage.split("\n")
     let isGuess = true
 
     if (d.startsWith("!no")) {
-        superbl.push(d.split(" ")[1])
-        db.get("incorrectLetters").set("storage", superbl.join("\n")).write()
+        incorrectLetters.push(d.split(" ")[1])
+        db.get("incorrectLetters").set("storage", incorrectLetters.join("\n")).write()
         isGuess = false
     }
 
@@ -33,7 +33,7 @@ function solve(d) {
     }
 
     for (let i = 0; i < possibleWords.length; i++) {
-        superbl.forEach((bl) => {
+        incorrectLetters.forEach((bl) => {
             if (bl.length > 0) {
                 if (possibleWords[i].includes(bl)) {
                     possibleWords[i] = ""
@@ -46,7 +46,7 @@ function solve(d) {
         let splitWord = possibleWords[i].split("")
         let builtWord = []
         for (let j = 0; j < mappedInput.length; j++) {
-            if (mappedInput[j] !== ".") blackListed.push(mappedInput[j])
+            if (mappedInput[j] !== ".") knownCharacters.push(mappedInput[j])
             if (mappedInput[j].toLowerCase() === splitWord[j]) builtWord.push(mappedInput[j])
             else if (mappedInput[j] === ".") builtWord.push(".")
         }
@@ -55,28 +55,28 @@ function solve(d) {
         }
     }
 
-    let noChars = newPossibleWords.join("").toLowerCase()
+    let combinedWords = newPossibleWords.join("").toLowerCase()
 
-    for (let i = 0; i < blackListed.length; i++) {
-        blackListed[i] = blackListed[i].toLowerCase()
+    for (let i = 0; i < knownCharacters.length; i++) {
+        knownCharacters[i] = knownCharacters[i].toLowerCase()
     }
 
-    blackListed = blackListed.reduce(function(a, b) {
+    knownCharacters = knownCharacters.reduce(function(a, b) {
         if (a.indexOf(b) < 0) a.push(b)
         return a
     }, [])
 
-    for (let i = 0; i < blackListed.length; i++) {
-        if (!blFile.join("").includes(blackListed[i])) blFile.push(blackListed[i])
+    for (let i = 0; i < knownCharacters.length; i++) {
+        if (!correctLetters.join("").includes(knownCharacters[i])) correctLetters.push(knownCharacters[i])
     }
 
-    for (let i = 0; i < blFile.length; i++) {
-        noChars = noChars.split(blFile[i]).join("")
+    for (let i = 0; i < correctLetters.length; i++) {
+        combinedWords = combinedWords.split(correctLetters[i]).join("")
     }
 
     console.log("Words left: " + newPossibleWords.length)
 
-    console.log("Best guess: " + maxCount(noChars))
+    console.log("Best guess: " + maxCount(combinedWords))
     if (newPossibleWords.length === 1) {
         console.log("The answer is: " + newPossibleWords[0])
         console.log("gg")
@@ -88,7 +88,7 @@ function solve(d) {
         return
     }
 
-    db.get("correctWords").set("storage", blFile.join("\n"))
+    db.get("correctWords").set("storage", correctLetters.join("\n"))
     db.get("possibleWords").set("storage", newPossibleWords.join("\n"))
 }
 
