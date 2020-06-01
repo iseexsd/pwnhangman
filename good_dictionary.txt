@@ -39858,10 +39858,10 @@ pulse
 pulsed
 pulses
 pulsing
-pulverisation
-pulverise
-pulverised
-pulverising
+pulverization
+pulverize
+pulverized
+pulverizing
 puma
 pumas
 pumice
