@@ -1,0 +1,15 @@
+{
+  "possibleWords": {
+    "started": "false",
+    "storage": ""
+  },
+  "correctLetters": {
+    "storage": ""
+  },
+  "incorrectLetters": {
+    "storage": ""
+  },
+  "lastGuess": {
+    "storage": ""
+  }
+}
