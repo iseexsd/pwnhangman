@@ -129,7 +129,7 @@ function maxCount(input) {
 }
 
 //modified version of http://www.mieliestronk.com/corncob_lowercase.txt
-let dictionary = fs.readFileSync("./good_dictionary.txt").toString().split("\n")
+let dictionary = fs.readFileSync("./words_alpha.txt").toString().split("\n")
 
 stdin.addListener("data", (d) => {
 
